@@ -3,19 +3,20 @@
 class Main extends CI_Controller{
 
     public function index(){
-        $this->signin();
+        redirect('main/signin');
     }
 
     public function signin(){
         //セッション無ければsigninへ
         if(!$this->session->userdata('is_logged_in')){
             $data['title'] = 'Signin';
+
             $this->load->view('templates/header', $data);
             $this->load->view('signin');
             $this->load->view('templates/footer', $data);
         //セッションがあればdashboardへ
         }else if($this->session->userdata('is_logged_in')){
-            $this->dashboard();
+            redirect('main/dashboard');
         }
     }
 
@@ -76,10 +77,10 @@ class Main extends CI_Controller{
                 $this->session->set_userdata($data);
                 redirect('main/dashboard');
             }else{
-                $this->load->view('signin');
+                redirect('main/signin');
             }
         }else{
-                $this->load->view('signin');
+            redirect('main/signin');
         }
     }
 }
