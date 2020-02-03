@@ -9,7 +9,10 @@ class Main extends CI_Controller{
     public function signin(){
         //セッション無ければsigninへ
         if(!$this->session->userdata('is_logged_in')){
+            $data['title'] = 'Signin';
+            $this->load->view('templates/header', $data);
             $this->load->view('signin');
+            $this->load->view('templates/footer', $data);
         //セッションがあればdashboardへ
         }else if($this->session->userdata('is_logged_in')){
             $this->dashboard();
@@ -31,7 +34,11 @@ class Main extends CI_Controller{
                 $this->load->model('Model_class');
                 $classes = $this->Model_class->get_classes($this->session->userdata('staff_id'));
                 $data['classes'] = $classes;
+
+                $data['title'] = 'Dashboard';
+                $this->load->view('templates/header', $data);
                 $this->load->view('dashboard', $data);
+                $this->load->view('templates/footer', $data);
             //URIの後ろにクラスidが指定されている場合
             //クラスの出席状況一覧表示
             }else{
@@ -39,7 +46,10 @@ class Main extends CI_Controller{
                 $this->load->model('Model_attendance');
                 $attendence_statuses = $this->Model_attendance->get_attendance_statuses($class_id);
                 $data['attendance_statuses'] = $attendence_statuses;
+                $data['title'] = '出席状況一覧';
+                $this->load->view('templates/header', $data);
                 $this->load->view('attendance_statuses', $data);
+                $this->load->view('templates/footer', $data);
             }
         }else{
             redirect ('main/signin');
