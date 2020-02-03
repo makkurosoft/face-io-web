@@ -13,7 +13,7 @@
 	<?php
 	foreach($classes as $class){
 	?>
-		<a href="<?php echo base_url() . "main/dashboard/" . $class['department_name'] . $class['grade']?>"><?php echo $class['department_name'] . $class['grade'] ?></a><br>
+		<a href="<?php echo base_url() . "main/dashboard/" . $class['class_id']?>"><?php echo $class['department_name'] . $class['grade'] ?></a><br>
 	<?php
 	}
 	?>

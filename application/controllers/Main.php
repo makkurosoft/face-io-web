@@ -21,22 +21,25 @@ class Main extends CI_Controller{
         redirect('main/signin');
     }
 
-    public function dashboard($class = NULL){
+    public function dashboard($class_id = NULL){
         //セッション判定
         if($this->session->userdata('is_logged_in')){
             //URIの後ろにクラスの情報がない場合
             //クラス一覧の表示
-            if($class === NULL){
+            if($class_id === NULL){
                 $data['user_name'] = $this->session->userdata('user_name');
                 $this->load->model('Model_class');
                 $classes = $this->Model_class->get_classes($this->session->userdata('staff_id'));
                 $data['classes'] = $classes;
                 $this->load->view('dashboard', $data);
-            //URIの後ろにクラスの情報されている場合
-            //クラス指定で出席状況一覧表示
+            //URIの後ろにクラスidが指定されている場合
+            //クラスの出席状況一覧表示
             }else{
-                $data['class_name'] = $class;
-                $this->load->view('attendancelist', $data);
+                $data['class_id'] = $class_id;
+                $this->load->model('Model_attendance');
+                $attendence_statuses = $this->Model_attendance->get_attendance_statuses($class_id);
+                $data['attendance_statuses'] = $attendence_statuses;
+                $this->load->view('attendance_statuses', $data);
             }
         }else{
             redirect ('main/signin');
