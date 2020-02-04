@@ -70,10 +70,16 @@ class Main extends CI_Controller{
             //URIの後ろにクラスidが指定されている場合
             //クラスの出席状況一覧表示
             }else{
-                $data['class_id'] = $class_id;
+                //出席一覧をDBから取得する
                 $this->load->model('Model_attendance');
                 $attendence_statuses = $this->Model_attendance->get_attendance_statuses($class_id);
                 $data['attendance_statuses'] = $attendence_statuses;
+
+                //クラス名をDBから取得する
+                $this->load->model('Model_class');
+                $class_name = $this->Model_class->get_classname($class_id);
+                $data['class_name'] = $class_name;
+
                 $data['title'] = '出席状況一覧';
                 $this->load->view('templates/header', $data);
                 $this->load->view('attendance_statuses', $data);
