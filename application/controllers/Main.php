@@ -9,11 +9,38 @@ class Main extends CI_Controller{
     public function signin(){
         //セッション無ければsigninへ
         if(!$this->session->userdata('is_logged_in')){
-            $data['title'] = 'Signin';
+            $this->load->library('form_validation');
+            $this->load->model('Model_teacher');
 
-            $this->load->view('templates/header', $data);
-            $this->load->view('signin');
-            $this->load->view('templates/footer', $data);
+            $user_name = $this->input->post('user_name');
+            $password = $this->input->post('password');
+
+            //フォームの入力値チェック
+            if($this->form_validation->run('signin')){
+                //ユーザ名とパスワードの照合
+                if($this->Model_teacher->signin($user_name, $password)){
+                    //セッションを登録しdashboardへ
+                    $data = array(
+                        'staff_id' => $this->Model_teacher->get_staffid($user_name),
+                        'user_name' => $user_name,
+                        'is_logged_in' => 1
+                    );
+                    $this->session->set_userdata($data);
+                    redirect('main/dashboard');
+                }else{
+                    $data['title'] = 'Signin';
+                    $data['errorMessage'] = 'ユーザ名かパスワードに誤りがあります。';
+                    $this->load->view('templates/header', $data);
+                    $this->load->view('signin', $data);
+                    $this->load->view('templates/footer', $data);
+                }
+            }else{
+                $data['title'] = 'Signin';
+                $data['errorMessage'] = '';
+                $this->load->view('templates/header', $data);
+                $this->load->view('signin');
+                $this->load->view('templates/footer', $data);
+            }
         //セッションがあればdashboardへ
         }else if($this->session->userdata('is_logged_in')){
             redirect('main/dashboard');
@@ -54,33 +81,6 @@ class Main extends CI_Controller{
             }
         }else{
             redirect ('main/signin');
-        }
-    }
-
-    public function signin_validation(){
-        $this->load->library('form_validation');
-        $this->load->model('Model_teacher');
-
-        $user_name = $this->input->post('user_name');
-        $password = $this->input->post('password');
-
-        //フォームの入力値チェック
-        if($this->form_validation->run('signin')){
-            //ユーザ名とパスワードの照合
-            if($this->Model_teacher->signin($user_name, $password)){
-                //セッションを登録しdashboardへ
-                $data = array(
-                    'staff_id' => $this->Model_teacher->get_staffid($user_name),
-                    'user_name' => $user_name,
-                    'is_logged_in' => 1
-                );
-                $this->session->set_userdata($data);
-                redirect('main/dashboard');
-            }else{
-                redirect('main/signin');
-            }
-        }else{
-            redirect('main/signin');
         }
     }
 }
