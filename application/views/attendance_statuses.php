@@ -3,7 +3,7 @@
 <a href="<?php echo base_url() . "main/dashboard"?>">ダッシュボード</a>
 <h1><?php echo $class_id;?>の出席状況</h1>
 
-<table>
+<table class = "table table-hover">
 	<tr>
 		<th>氏名</th><th>出欠</th>
 	</tr>
