@@ -18,3 +18,4 @@
 	?>
 	</table>
 </div>
+<script>setTimeout(function(){location.reload();}, 10000);</script>
