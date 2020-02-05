@@ -6,7 +6,7 @@ class Model_teacher extends CI_Model{
         $this->load->database();
     }
 
-    //ログイン用
+    //ユーザ名とパスワードの照合
     public function signin($user_name, $password){
         $data = array(
             'user_name' => $user_name,
@@ -21,6 +21,9 @@ class Model_teacher extends CI_Model{
             return false;
         }
     }
+
+    //ユーザ名からスタッフIDを取得するメソッド
+    //セッションにスタッフIDを入れるため用
     public function get_staffid($user_name){
         $query = $this->db->get_where('StaffAccount', array('user_name' => $user_name));
 
