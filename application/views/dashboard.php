@@ -25,7 +25,7 @@
 	<?php
 	foreach($classes as $class){
 	?>
-	<a href="<?php echo base_url() . "main/dashboard/" . $class['class_id']?>"><?php echo $class['department_name'] . $class['grade'] ."年"?></a><br>
+	<a class="btn btn-primary btn-lg my-2 ml-3" href="<?php echo base_url() . "main/dashboard/" . $class['class_id']?>" role="button"><?php echo $class['department_name'] . $class['grade'] ."年"?></a><br>
 	<?php
 	}
 	?>
