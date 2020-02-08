@@ -1,5 +1,9 @@
 
 <div class="container">
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+		<a class="navbar-brand" href="#">Face-io</a>
+	</nav>
+
     <h1>Sign in</h1>
     <?php echo form_open("main/signin"); ?>
         <div class="form-group row">
