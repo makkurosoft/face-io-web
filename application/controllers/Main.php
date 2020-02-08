@@ -1,5 +1,4 @@
 <?php if(!defined('BASEPATH')) exit('No direct script access allowed');
-
 class Main extends CI_Controller{
 
     public function index(){
@@ -89,4 +88,39 @@ class Main extends CI_Controller{
             redirect ('main/signin');
         }
     }
+
+	public function history($class_id = NULL){
+        if($this->session->userdata('is_logged_in')){
+          $this->load->model('Model_class');
+          $this->load->model('Model_attendance');
+
+          //クラス名をDBから取得する
+          $class_name = $this->Model_class->get_classname($class_id);
+          $data['class_name'] = $class_name;
+
+          // クラスの所属生徒一覧を取得
+          $students = $this->Model_class->get_student_list($class_id);
+          $data['students'] = $students;
+
+          // <th>用の日付仮想表を取得する
+          $dates = $this->Model_attendance->get_dates();
+          $data['dates'] = $dates;
+
+          // 所属生徒の出席履歴を取得する
+          $at_hists = array();
+          foreach($students as $student){
+            array_push($at_hists, $this->Model_attendance->get_one_data($student['label_id']));
+          }
+
+          $data['at_hists'] = $at_hists;
+
+          $data['title'] = '出席履歴';
+          $this->load->view('templates/header', $data);
+          $this->load->view('attendance_histories', $data);
+          $this->load->view('templates/footer', $data);
+
+        }else{
+            redirect ('main/signin');
+        }
+	}
 }

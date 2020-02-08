@@ -18,6 +18,21 @@ class Model_class extends CI_Model{
       $query = $this->db->query($sql, array($class_id));
       return $query->row();
   }
+
+  public function get_student_list($class_id){
+    $sql = "
+        SELECT
+          attendance_number,
+          name,
+          Label.label_id
+          FROM Belongs, Label, Student
+         WHERE Label.student_id = Belongs.student_id
+           AND Student.student_id = Belongs.student_id
+           AND  class_id = ?
+     ";
+    $query = $this->db->query($sql, array($class_id));
+    return $query->result_array();
+    }
 }
 
   ?>
