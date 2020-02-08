@@ -55,10 +55,10 @@ class Main extends CI_Controller{
     public function dashboard($class_id = NULL){
         //セッション判定
         if($this->session->userdata('is_logged_in')){
+            $data['user_name'] = $this->session->userdata('user_name');
             //URIの後ろにクラスの情報がない場合
             //クラス一覧の表示
             if($class_id === NULL){
-                $data['user_name'] = $this->session->userdata('user_name');
                 $this->load->model('Model_class');
                 $classes = $this->Model_class->get_classes($this->session->userdata('staff_id'));
                 $data['classes'] = $classes;
@@ -73,19 +73,17 @@ class Main extends CI_Controller{
                 //クラス名をDBから取得する
                 $this->load->model('Model_class');
                 $class_name = $this->Model_class->get_classname($class_id);
-
+                $data['class_name'] = $class_name;
                 if(!$class_name){
                     $data['title'] = 'エラー';
                     $this->load->view('templates/header', $data);
                     $this->load->view('error', $data);
                     $this->load->view('templates/footer', $data);
-
                 }else{
                     //出席一覧をDBから取得する
                     $this->load->model('Model_attendance');
                     $attendence_statuses = $this->Model_attendance->get_attendance_statuses($class_id);
                     $data['attendance_statuses'] = $attendence_statuses;
-                    $data['class_name'] = $class_name;
                     $data['title'] = '出席状況一覧';
                     $this->load->view('templates/header', $data);
                     $this->load->view('attendance_statuses', $data);
