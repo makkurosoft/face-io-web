@@ -108,12 +108,18 @@ class Main extends CI_Controller{
             $data['class_id'] = $class_id;
           }
 
-          // class_idが担当クラスのものでない場合
-          //
-
           //クラス名をDBから取得する
           $class_name = $this->Model_class->get_classname($class_id);
           $data['class_name'] = $class_name;
+
+          // 不正なクラスIDだった場合エラー画面に遷移
+          if(!$class_name){
+            $data['title'] = 'エラー';
+            $this->load->view('templates/header', $data);
+            $this->load->view('error', $data);
+            $this->load->view('templates/footer', $data);
+            return;
+          }
 
           // クラスの所属生徒一覧を取得
           $students = $this->Model_class->get_student_list($class_id);
