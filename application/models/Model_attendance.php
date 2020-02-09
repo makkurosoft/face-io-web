@@ -88,14 +88,19 @@ class Model_attendance extends CI_Model{
       SELECT
         day_info.dates,
         ifnull(
-          (CASE attendance_5.atd
-           BETWEEN UNIX_TIMESTAMP(DATE(FROM_UNIXTIME(attendance_5.atd)) + INTERVAL 6 HOUR)
+          (CASE attendance_status.atd
+           BETWEEN UNIX_TIMESTAMP(DATE(FROM_UNIXTIME(attendance_status.atd)) + INTERVAL 6 HOUR)
             AND
-           UNIX_TIMESTAMP(DATE(FROM_UNIXTIME(attendance_5.atd)) + INTERVAL 9 HOUR + INTERVAL 20 MINUTE)
+           UNIX_TIMESTAMP(DATE(FROM_UNIXTIME(attendance_status.atd)) + INTERVAL 9 HOUR + INTERVAL 20 MINUTE)
            WHEN 1 THEN '出'
            WHEN 0 THEN '遅'
            END
-          ), '欠') as 出欠判定
+          ),
+            CASE DAYOFWEEK(day_info.dates) BETWEEN 2 AND 6
+            WHEN 1 THEN '欠'
+            WHEN 0 THEN '-'
+            END
+        ) AS 出欠判定
         FROM
             (SELECT
                (CURDATE() - INTERVAL (@seq_no:= 0) DAY) AS dates UNION SELECT (CURDATE() - INTERVAL (@seq_no:= ( @seq_no + 1)) DAY)
@@ -108,8 +113,8 @@ class Model_attendance extends CI_Model{
                FROM Attendance
               WHERE label_id = ?
               GROUP BY (FROM_UNIXTIME(date, '%Y-%m-%d'))
-            ) AS attendance_5
-                ON day_info.dates = attendance_5.dates
+            ) AS attendance_status
+                ON day_info.dates = attendance_status.dates
         -- 月曜~金曜のみ表示
        -- WHERE DAYOFWEEK(day_info.dates) BETWEEN 2 AND 6
        ORDER BY day_info.dates DESC;
