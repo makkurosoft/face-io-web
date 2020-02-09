@@ -35,5 +35,7 @@
 		}
 		?>
 	</table>
+
+<a href="<?php echo base_url() . "main/history/" . $class_id ?>">出席履歴</a>
 </div>
 <script>setTimeout(function(){location.reload();}, 10000);</script>

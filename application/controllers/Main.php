@@ -70,6 +70,7 @@ class Main extends CI_Controller{
             //クラスの出席状況一覧表示
             }else{
                 //クラス名をDBから取得する
+                $data['class_id'] = $class_id;
                 $this->load->model('Model_class');
                 $class_name = $this->Model_class->get_classname($class_id);
                 $data['class_name'] = $class_name;
@@ -96,12 +97,15 @@ class Main extends CI_Controller{
 
 	public function history($class_id = NULL){
         if($this->session->userdata('is_logged_in')){
+          $data['user_name'] = $this->session->userdata('user_name');
           $this->load->model('Model_class');
           $this->load->model('Model_attendance');
 
           // class_idの指定がない場合
           if ($class_id === NULL){
             redirect ('main/dashboard');
+          }else{
+            $data['class_id'] = $class_id;
           }
 
           // class_idが担当クラスのものでない場合
