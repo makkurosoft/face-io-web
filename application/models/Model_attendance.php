@@ -41,5 +41,81 @@ class Model_attendance extends CI_Model{
 	  $query = $this->db->query($sql, array($class_id));
 	  return $query->result_array();
 	}
+
+  // 出席履歴用の日付一覧を取得する
+  public function get_dates($limit = NULL){
+    if($limit === NULL){
+      $limit = 30;
+    }
+
+    $sql = "
+      SELECT
+        (CURDATE() - INTERVAL (@seq_no := 0) DAY) AS dates,
+        CASE DAYOFWEEK(CURDATE() - INTERVAL (@seq_no := 0) DAY)
+        WHEN 1 THEN '日'
+        WHEN 2 THEN '月'
+        WHEN 3 THEN '火'
+        WHEN 4 THEN '水'
+        WHEN 5 THEN '木'
+        WHEN 6 THEN '金'
+        WHEN 7 THEN '土'
+        END
+          AS wk
+       UNION
+      SELECT
+        (CURDATE() - INTERVAL (@seq_no := ( @seq_no + 1)) DAY) AS dates,
+        CASE DAYOFWEEK(CURDATE() - INTERVAL ((@seq_no)) DAY)
+        WHEN 1 THEN '日'
+        WHEN 2 THEN '月'
+        WHEN 3 THEN '火'
+        WHEN 4 THEN '水'
+        WHEN 5 THEN '木'
+        WHEN 6 THEN '金'
+        WHEN 7 THEN '土'
+        END
+          AS wk
+        FROM Attendance
+       LIMIT 30;
+      ";
+
+    $query = $this->db->query($sql);
+	  return $query->result_array();
+  }
+
+  // 一日あたりのクラスの出席状況一覧を取得する
+  public function get_one_data($label_id){
+    $sql = "
+      SELECT
+        day_info.dates,
+        ifnull(
+          (CASE attendance_5.atd
+           BETWEEN UNIX_TIMESTAMP(DATE(FROM_UNIXTIME(attendance_5.atd)) + INTERVAL 6 HOUR)
+            AND
+           UNIX_TIMESTAMP(DATE(FROM_UNIXTIME(attendance_5.atd)) + INTERVAL 9 HOUR + INTERVAL 20 MINUTE)
+           WHEN 1 THEN '出'
+           WHEN 0 THEN '遅'
+           END
+          ), '欠') as 出欠判定
+        FROM
+            (SELECT
+               (CURDATE() - INTERVAL (@seq_no:= 0) DAY) AS dates UNION SELECT (CURDATE() - INTERVAL (@seq_no:= ( @seq_no + 1)) DAY)
+               FROM Attendance
+              LIMIT 30
+            ) AS day_info
+            LEFT JOIN
+            (SELECT DATE_FORMAT(FROM_UNIXTIME(date), '%Y-%m-%d') AS dates,
+                    MIN(date) AS atd
+               FROM Attendance
+              WHERE label_id = ?
+              GROUP BY (FROM_UNIXTIME(date, '%Y-%m-%d'))
+            ) AS attendance_5
+                ON day_info.dates = attendance_5.dates
+        -- 月曜~金曜のみ表示
+       -- WHERE DAYOFWEEK(day_info.dates) BETWEEN 2 AND 6
+       ORDER BY day_info.dates DESC;
+       ";
+    $query = $this->db->query($sql, array($label_id));
+	  return $query->result_array();
+  }
 }
  ?>
