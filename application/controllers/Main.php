@@ -94,6 +94,14 @@ class Main extends CI_Controller{
           $this->load->model('Model_class');
           $this->load->model('Model_attendance');
 
+          // class_idの指定がない場合
+          if ($class_id === NULL){
+            redirect ('main/dashboard');
+          }
+
+          // class_idが担当クラスのものでない場合
+          //
+
           //クラス名をDBから取得する
           $class_name = $this->Model_class->get_classname($class_id);
           $data['class_name'] = $class_name;
@@ -111,7 +119,6 @@ class Main extends CI_Controller{
           foreach($students as $student){
             array_push($at_hists, $this->Model_attendance->get_one_data($student['label_id']));
           }
-
           $data['at_hists'] = $at_hists;
 
           $data['title'] = '出席履歴';

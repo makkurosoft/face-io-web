@@ -47,13 +47,36 @@ class Model_attendance extends CI_Model{
     if($limit === NULL){
       $limit = 30;
     }
+
     $sql = "
-    SELECT (CURDATE() - INTERVAL (@seq_no := 0) DAY) AS dates
-     UNION
-    SELECT (CURDATE() - INTERVAL (@seq_no := ( @seq_no + 1)) DAY) AS dates
-      FROM Attendance
-     LIMIT 30;
-    ";
+      SELECT
+        (CURDATE() - INTERVAL (@seq_no := 0) DAY) AS dates,
+        CASE DAYOFWEEK(CURDATE() - INTERVAL (@seq_no := 0) DAY)
+        WHEN 1 THEN '日'
+        WHEN 2 THEN '月'
+        WHEN 3 THEN '火'
+        WHEN 4 THEN '水'
+        WHEN 5 THEN '木'
+        WHEN 6 THEN '金'
+        WHEN 7 THEN '土'
+        END
+          AS wk
+       UNION
+      SELECT
+        (CURDATE() - INTERVAL (@seq_no := ( @seq_no + 1)) DAY) AS dates,
+        CASE DAYOFWEEK(CURDATE() - INTERVAL ((@seq_no)) DAY)
+        WHEN 1 THEN '日'
+        WHEN 2 THEN '月'
+        WHEN 3 THEN '火'
+        WHEN 4 THEN '水'
+        WHEN 5 THEN '木'
+        WHEN 6 THEN '金'
+        WHEN 7 THEN '土'
+        END
+          AS wk
+        FROM Attendance
+       LIMIT 30;
+      ";
 
     $query = $this->db->query($sql);
 	  return $query->result_array();

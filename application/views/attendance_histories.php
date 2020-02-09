@@ -7,7 +7,7 @@
 		<th>出席番号</th><th>氏名</th>
 		<?php
 			foreach($dates as $date){
-				echo "<th>".$date['dates']."</th>";
+				echo "<th>".$date['dates']."(".$date["wk"].")"."</th>";
 			}
 		?>
 	</tr>
