@@ -30,7 +30,6 @@
 		?>
 	</tr>
 	<?php
-		/* foreach($students as $student){ */
 		foreach(array_map(null, $students, $at_hists) as [$student, $at_hist]){
 	?>
 		<tr>
