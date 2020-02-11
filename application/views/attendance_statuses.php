@@ -20,6 +20,7 @@
 	</nav>
 
 	<h1><?php echo $class_name->department_name . $class_name->grade;?>年の出席状況</h1>
+	<a class="btn btn-primary btn-lg my-2 ml-3" href="<?php echo base_url() . "main/history/" . $class_id?>" role="button">出席履歴</a>
 	<table class = "table table-hover">
 		<tr>
 			<th>氏名</th><th>出欠</th>
@@ -36,6 +37,5 @@
 		?>
 	</table>
 
-<a href="<?php echo base_url() . "main/history/" . $class_id ?>">出席履歴</a>
 </div>
 <script>setTimeout(function(){location.reload();}, 10000);</script>

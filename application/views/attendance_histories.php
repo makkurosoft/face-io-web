@@ -20,6 +20,7 @@
 	</nav>
 
   <h1><?php echo $class_name->department_name . $class_name->grade;?>年の出席履歴</h1>
+  <a class="btn btn-primary btn-lg my-2 ml-3" href="<?php echo base_url() . "main/dashboard/" . $class_id?>" role="button">出席状況</a>
 	<table class = "table table-hover">
 	<tr>
 		<th>出席番号</th><th>氏名</th>
@@ -45,6 +46,5 @@
 	}
 	?>
 	</table>
-<a href="<?php echo base_url() . "main/dashboard/" . $class_id ?>">出席状況</a>
 </div>
 <!-- <script>setTimeout(function(){location.reload();}, 10000);</script> -->
