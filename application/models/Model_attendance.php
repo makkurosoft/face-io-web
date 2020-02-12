@@ -75,15 +75,18 @@ class Model_attendance extends CI_Model{
         END
           AS wk
         FROM Attendance
-       LIMIT 30;
+       LIMIT ?;
       ";
 
-    $query = $this->db->query($sql);
+    $query = $this->db->query($sql, array($limit));
 	  return $query->result_array();
   }
 
   // 一日あたりのクラスの出席状況一覧を取得する
-  public function get_one_data($label_id){
+  public function get_one_data($label_id, $limit=NULL){
+    if($limit === NULL){
+      $limit = 30;
+    }
     $sql = "
       SELECT
         day_info.dates,
@@ -105,7 +108,7 @@ class Model_attendance extends CI_Model{
             (SELECT
                (CURDATE() - INTERVAL (@seq_no:= 0) DAY) AS dates UNION SELECT (CURDATE() - INTERVAL (@seq_no:= ( @seq_no + 1)) DAY)
                FROM Attendance
-              LIMIT 30
+              LIMIT ?
             ) AS day_info
             LEFT JOIN
             (SELECT DATE_FORMAT(FROM_UNIXTIME(date), '%Y-%m-%d') AS dates,
@@ -119,7 +122,7 @@ class Model_attendance extends CI_Model{
        -- WHERE DAYOFWEEK(day_info.dates) BETWEEN 2 AND 6
        ORDER BY day_info.dates DESC;
        ";
-    $query = $this->db->query($sql, array($label_id));
+    $query = $this->db->query($sql, array($limit, $label_id));
 	  return $query->result_array();
   }
 }

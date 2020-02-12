@@ -125,14 +125,16 @@ class Main extends CI_Controller{
           $students = $this->Model_class->get_student_list($class_id);
           $data['students'] = $students;
 
+          $limit = 7;
+
           // <th>用の日付仮想表を取得する
-          $dates = $this->Model_attendance->get_dates();
+          $dates = $this->Model_attendance->get_dates($limit);
           $data['dates'] = $dates;
 
           // 所属生徒の出席履歴を取得する
           $at_hists = array();
           foreach($students as $student){
-            array_push($at_hists, $this->Model_attendance->get_one_data($student['label_id']));
+            array_push($at_hists, $this->Model_attendance->get_one_data($student['label_id'], $limit));
           }
           $data['at_hists'] = $at_hists;
 
